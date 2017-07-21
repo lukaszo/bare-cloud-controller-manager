@@ -1,0 +1,11 @@
+package: github.com/lukaszo/bare-cloud-controller-manager
+import:
+- package: github.com/golang/glog
+- package: github.com/spf13/pflag
+- package: k8s.io/apiserver
+- package: k8s.io/kubernetes
+  version: v1.7.0
+- package: k8s.io/client-go
+  version: ^4.0.0-beta.0
+  subpackages:
+  - pkg/api/v1
