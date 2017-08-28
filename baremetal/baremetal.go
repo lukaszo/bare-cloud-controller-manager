@@ -2,6 +2,7 @@ package baremetal
 
 import (
 	"io"
+	"os"
 
 	"k8s.io/kubernetes/pkg/cloudprovider"
 	"k8s.io/kubernetes/pkg/controller"
@@ -13,6 +14,7 @@ const (
 
 // BareMetalProvider implents LoadBalancer
 type BareMetalProvider struct {
+	ip string
 }
 
 // Initialize passes a Kubernetes clientBuilder interface to the cloud provider
@@ -30,7 +32,7 @@ func (b *BareMetalProvider) ScrubDNS(nameservers, searches []string) (nsOut, src
 
 // LoadBalancer returns an implementation of LoadBalancer
 func (b *BareMetalProvider) LoadBalancer() (cloudprovider.LoadBalancer, bool) {
-	return NewBareMetalLoadBalancer(), true
+	return NewBareMetalLoadBalancer(b.ip), true
 }
 
 // Zones not supported
@@ -55,6 +57,7 @@ func (b *BareMetalProvider) Routes() (cloudprovider.Routes, bool) {
 
 func init() {
 	cloudprovider.RegisterCloudProvider(providerName, func(config io.Reader) (cloudprovider.Interface, error) {
-		return &BareMetalProvider{}, nil
+		ip := os.Getenv("LB_IP")
+		return &BareMetalProvider{ip: ip}, nil
 	})
 }
